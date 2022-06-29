@@ -1,8 +1,16 @@
 import React from "react";
-import Discover from "./Discover";
+import { Route, Routes as PageRoutes } from "react-router-dom";
+
+import Discover from "../pages/Discover";
+import NotFound from "../pages/NotFound";
 
 const Routes = () => {
-  return <Discover />;
+  return (
+    <PageRoutes>
+      <Route path="/" element={<Discover />} />
+      <Route path="*" element={<NotFound />} />
+    </PageRoutes>
+  );
 };
 
 export default Routes;
