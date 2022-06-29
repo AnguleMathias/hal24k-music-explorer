@@ -1,15 +1,22 @@
 import React from "react";
-import { Route, Routes as PageRoutes } from "react-router-dom";
+import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 
 import Discover from "../pages/Discover";
 import NotFound from "../pages/NotFound";
 
+const App = () => {
+  const routes = useRoutes([
+    { path: "/", element: <Discover /> },
+    { path: "*", element: <NotFound /> },
+  ]);
+  return routes;
+};
+
 const Routes = () => {
   return (
-    <PageRoutes>
-      <Route path="/" element={<Discover />} />
-      <Route path="*" element={<NotFound />} />
-    </PageRoutes>
+    <Router>
+      <App />
+    </Router>
   );
 };
 

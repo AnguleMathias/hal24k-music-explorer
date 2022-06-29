@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import newReleasesService from "./releaseService";
 
 type newReleases = {
-  newReleases: [];
+  newReleases: any;
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
-  message: string;
+  message: any;
 };
 
 const initialState: newReleases = {
@@ -15,6 +16,23 @@ const initialState: newReleases = {
   isError: false,
   message: "",
 };
+
+// get all new releases
+export const getAllNewReleases: any = createAsyncThunk(
+  "/newReleases/fetchNewReleases",
+  async (id, thunkAPI) => {
+    try {
+      return await newReleasesService();
+    } catch (err: any) {
+      const message =
+        (err.response && err.response.data && err.response.data.message) ||
+        err.message ||
+        err.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 export const newReleasesSlice = createSlice({
   name: "newReleases",
@@ -27,7 +45,22 @@ export const newReleasesSlice = createSlice({
       state.message = "";
     },
   },
-  extraReducers: () => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getAllNewReleases.pending, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(getAllNewReleases.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.newReleases = action.payload;
+      })
+      .addCase(getAllNewReleases.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      });
+  },
 });
 
 export const { reset } = newReleasesSlice.actions;
